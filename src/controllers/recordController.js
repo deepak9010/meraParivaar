@@ -6,7 +6,6 @@ const messages = require('../constants/messages');
 const createRecord = async (req, res) => {
   const record = await recordService.createRecord(req.body, {
     userId: req.user.id,
-    ipAddress: req.ip,
   });
 
   return sendSuccess(res, {
@@ -37,10 +36,7 @@ const getRecordById = async (req, res) => {
 };
 
 const updateRecord = async (req, res) => {
-  const record = await recordService.updateRecord(req.params.id, req.body, {
-    userId: req.user.id,
-    ipAddress: req.ip,
-  });
+  const record = await recordService.updateRecord(req.params.id, req.body);
 
   return sendSuccess(res, {
     message: messages.RECORD.UPDATED,
@@ -50,10 +46,7 @@ const updateRecord = async (req, res) => {
 };
 
 const deleteRecord = async (req, res) => {
-  await recordService.deleteRecord(req.params.id, {
-    userId: req.user.id,
-    ipAddress: req.ip,
-  });
+  await recordService.deleteRecord(req.params.id);
 
   return sendSuccess(res, {
     message: messages.RECORD.DELETED,

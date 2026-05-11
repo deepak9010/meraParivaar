@@ -7,7 +7,6 @@ const config = require('../config');
 const SOURCES = require('../constants/sources');
 const publicLinkRepository = require('../repositories/publicLinkRepository');
 const recordService = require('./recordService');
-const auditService = require('./auditService');
 const { getPagination, buildPaginationMeta } = require('../helpers/paginationHelper');
 
 const generateToken = () => crypto.randomBytes(32).toString('hex');
@@ -31,14 +30,6 @@ const createPublicLink = async (payload, context = {}) => {
     created_by: context.userId,
     is_active: true,
     expires_at: payload.expires_at || null,
-  });
-
-  await auditService.logAction({
-    userId: context.userId,
-    action: 'PUBLIC_LINK_CREATE',
-    entityType: 'public_link',
-    entityId: link.id,
-    ipAddress: context.ipAddress,
   });
 
   return {
@@ -95,7 +86,7 @@ const getPublicForm = async (token) => {
   };
 };
 
-const submitPublicForm = async (payload, context = {}) => {
+const submitPublicForm = async (payload) => {
   const link = await publicLinkRepository.findByToken(payload.token);
 
   if (!isLinkActive(link)) {
@@ -114,19 +105,6 @@ const submitPublicForm = async (payload, context = {}) => {
     source: SOURCES.OPEN_LINK,
   }, {
     userId: link.created_by,
-    ipAddress: context.ipAddress,
-  });
-
-  await auditService.logAction({
-    userId: null,
-    action: 'PUBLIC_FORM_SUBMIT',
-    entityType: 'record',
-    entityId: record.id,
-    metadata: {
-      token,
-      language: record.language,
-    },
-    ipAddress: context.ipAddress,
   });
 
   return record;

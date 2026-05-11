@@ -6,7 +6,6 @@ const messages = require('../constants/messages');
 const createPublicLink = async (req, res) => {
   const link = await publicService.createPublicLink(req.body, {
     userId: req.user.id,
-    ipAddress: req.ip,
   });
 
   return sendSuccess(res, {
@@ -37,9 +36,7 @@ const getPublicForm = async (req, res) => {
 };
 
 const submitPublicForm = async (req, res) => {
-  const record = await publicService.submitPublicForm(req.body, {
-    ipAddress: req.ip,
-  });
+  const record = await publicService.submitPublicForm(req.body);
 
   return sendSuccess(res, {
     message: messages.PUBLIC.SUBMIT_SUCCESS,

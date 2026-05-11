@@ -7,8 +7,6 @@ const recordRepository = require('../repositories/recordRepository');
 const { buildSearchableFields, normalizeSearchQuery } = require('../helpers/searchNormalizer');
 const { getPagination, buildPaginationMeta } = require('../helpers/paginationHelper');
 const { toPublicRecord, toPublicRecords } = require('../helpers/recordPresenter');
-const auditService = require('./auditService');
-
 const buildRecordPayload = (input, { source, createdBy }) => ({
   ...input,
   ...buildSearchableFields(input),
@@ -36,18 +34,6 @@ const createRecord = async (payload, context = {}) => {
     source: payload.source || SOURCES.ADMIN_PANEL,
     createdBy: context.userId,
   }));
-
-  await auditService.logAction({
-    userId: context.userId,
-    action: 'RECORD_CREATE',
-    entityType: 'record',
-    entityId: record.id,
-    metadata: {
-      source: record.source,
-      language: record.language,
-    },
-    ipAddress: context.ipAddress,
-  });
 
   return toPublicRecord(record);
 };
@@ -94,7 +80,7 @@ const getRecordById = async (id) => {
   return toPublicRecord(record);
 };
 
-const updateRecord = async (id, payload, context = {}) => {
+const updateRecord = async (id, payload) => {
   const record = await recordRepository.findById(id);
 
   if (!record) {
@@ -129,18 +115,10 @@ const updateRecord = async (id, payload, context = {}) => {
   await recordRepository.updateById(id, updatePayload);
   const updatedRecord = await recordRepository.findById(id);
 
-  await auditService.logAction({
-    userId: context.userId,
-    action: 'RECORD_UPDATE',
-    entityType: 'record',
-    entityId: id,
-    ipAddress: context.ipAddress,
-  });
-
   return toPublicRecord(updatedRecord);
 };
 
-const deleteRecord = async (id, context = {}) => {
+const deleteRecord = async (id) => {
   const record = await recordRepository.findById(id);
 
   if (!record) {
@@ -153,14 +131,6 @@ const deleteRecord = async (id, context = {}) => {
   }
 
   await recordRepository.deleteById(id);
-
-  await auditService.logAction({
-    userId: context.userId,
-    action: 'RECORD_DELETE',
-    entityType: 'record',
-    entityId: id,
-    ipAddress: context.ipAddress,
-  });
 };
 
 const searchRecords = async (query = {}) => {

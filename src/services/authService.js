@@ -6,7 +6,6 @@ const ROLES = require('../constants/roles');
 const userRepository = require('../repositories/userRepository');
 const { hashPassword, comparePassword } = require('../helpers/passwordHelper');
 const { signAccessToken } = require('../helpers/jwtHelper');
-const auditService = require('./auditService');
 const logger = require('../utils/logger');
 
 const toPublicUser = (user) => ({
@@ -18,7 +17,7 @@ const toPublicUser = (user) => ({
   updated_at: user.updated_at,
 });
 
-const signup = async ({ name, email, password, role = ROLES.USER }, context = {}) => {
+const signup = async ({ name, email, password, role = ROLES.USER }) => {
   const existingUser = await userRepository.findByEmail(email);
 
   if (existingUser) {
@@ -46,21 +45,13 @@ const signup = async ({ name, email, password, role = ROLES.USER }, context = {}
 
   logger.info('User signed up', { userId: user.id, email: user.email, role: user.role });
 
-  await auditService.logAction({
-    userId: user.id,
-    action: 'AUTH_SIGNUP',
-    entityType: 'user',
-    entityId: user.id,
-    ipAddress: context.ipAddress,
-  });
-
   return {
     user: toPublicUser(user),
     token,
   };
 };
 
-const login = async ({ email, password }, context = {}) => {
+const login = async ({ email, password }) => {
   const user = await userRepository.findByEmail(email);
 
   if (!user) {
@@ -90,14 +81,6 @@ const login = async ({ email, password }, context = {}) => {
   });
 
   logger.info('User logged in', { userId: user.id, email: user.email });
-
-  await auditService.logAction({
-    userId: user.id,
-    action: 'AUTH_LOGIN',
-    entityType: 'user',
-    entityId: user.id,
-    ipAddress: context.ipAddress,
-  });
 
   return {
     user: toPublicUser(user),

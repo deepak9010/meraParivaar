@@ -31,6 +31,9 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+app.get('/openapi.json', (req, res) => {
+  res.json(swaggerSpec);
+});
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1', routes);
 app.use(notFound);

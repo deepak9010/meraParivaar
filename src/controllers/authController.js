@@ -4,7 +4,7 @@ const statusCodes = require('../constants/statusCodes');
 const messages = require('../constants/messages');
 
 const signup = async (req, res) => {
-  const result = await authService.signup(req.body, { ipAddress: req.ip });
+  const result = await authService.signup(req.body);
 
   return sendSuccess(res, {
     message: messages.AUTH.SIGNUP_SUCCESS,
@@ -14,7 +14,7 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const result = await authService.login(req.body, { ipAddress: req.ip });
+  const result = await authService.login(req.body);
 
   return sendSuccess(res, {
     message: messages.AUTH.LOGIN_SUCCESS,
