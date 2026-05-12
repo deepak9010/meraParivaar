@@ -79,8 +79,8 @@ const getPublicForm = async (token) => {
     token: link.token,
     languages: ['HI', 'EN'],
     fields: {
-      HI: ['नाम', 'खंड', 'गांव', 'विधानसभा', 'ज़िला', 'प्रदेश', 'मोबाइल नंबर'],
-      EN: ['name', 'block', 'village', 'constituency', 'district', 'state', 'mobile_number'],
+      HI: ['नाम', 'खंड', 'गांव', 'विधानसभा', 'ज़िला', 'राज्य', 'देश', 'मोबाइल नंबर'],
+      EN: ['name', 'block', 'village', 'constituency', 'district', 'state', 'country', 'mobile_number'],
     },
     expires_at: link.expires_at,
   };
