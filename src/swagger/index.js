@@ -26,19 +26,22 @@ const options = {
       schemas: {
         SignupRequest: {
           type: 'object',
-          required: ['name', 'email', 'password'],
+          required: ['name', 'email', 'mobile_number', 'password'],
           properties: {
             name: { type: 'string', example: 'Admin User' },
             email: { type: 'string', format: 'email', example: 'admin@example.com' },
+            mobile_number: { type: 'string', example: '9876543210' },
             password: { type: 'string', format: 'password', example: 'Admin@123' },
             role: { type: 'string', enum: ['ADMIN', 'USER'], example: 'ADMIN' },
           },
         },
         LoginRequest: {
           type: 'object',
-          required: ['email', 'password'],
+          required: ['password'],
+          description: 'Send either email or mobile_number with password (not both).',
           properties: {
             email: { type: 'string', format: 'email', example: 'admin@example.com' },
+            mobile_number: { type: 'string', example: '9999990001' },
             password: { type: 'string', format: 'password', example: 'Admin@123' },
           },
         },

@@ -30,7 +30,7 @@ router.post('/signup', validate(signupSchema), asyncHandler(authController.signu
  * /auth/login:
  *   post:
  *     tags: [Auth]
- *     summary: Login with email and password
+ *     summary: Login with email or mobile number and password
  *     requestBody:
  *       required: true
  *       content:

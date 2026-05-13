@@ -12,17 +12,29 @@ const toPublicUser = (user) => ({
   id: user.id,
   name: user.name,
   email: user.email,
+  mobile_number: user.mobile_number,
   role: user.role,
   created_at: user.created_at,
   updated_at: user.updated_at,
 });
 
-const signup = async ({ name, email, password, role = ROLES.USER }) => {
-  const existingUser = await userRepository.findByEmail(email);
+const signup = async ({ name, email, mobile_number, password, role = ROLES.USER }) => {
+  const existingByEmail = await userRepository.findByEmail(email);
 
-  if (existingUser) {
+  if (existingByEmail) {
     throw new AppError(
       messages.AUTH.EMAIL_EXISTS,
+      statusCodes.CONFLICT,
+      [],
+      errorTypes.CONFLICT
+    );
+  }
+
+  const existingByMobile = await userRepository.findByMobileNumber(mobile_number);
+
+  if (existingByMobile) {
+    throw new AppError(
+      messages.AUTH.MOBILE_EXISTS,
       statusCodes.CONFLICT,
       [],
       errorTypes.CONFLICT
@@ -33,6 +45,7 @@ const signup = async ({ name, email, password, role = ROLES.USER }) => {
   const user = await userRepository.create({
     name,
     email,
+    mobile_number,
     password: hashedPassword,
     role,
   });
@@ -41,6 +54,7 @@ const signup = async ({ name, email, password, role = ROLES.USER }) => {
     sub: user.id,
     role: user.role,
     email: user.email,
+    mobile_number: user.mobile_number,
   });
 
   logger.info('User signed up', { userId: user.id, email: user.email, role: user.role });
@@ -51,8 +65,10 @@ const signup = async ({ name, email, password, role = ROLES.USER }) => {
   };
 };
 
-const login = async ({ email, password }) => {
-  const user = await userRepository.findByEmail(email);
+const login = async ({ email, mobile_number, password }) => {
+  const user = email
+    ? await userRepository.findByEmail(email)
+    : await userRepository.findByMobileNumber(mobile_number);
 
   if (!user) {
     throw new AppError(
@@ -78,6 +94,7 @@ const login = async ({ email, password }) => {
     sub: user.id,
     role: user.role,
     email: user.email,
+    mobile_number: user.mobile_number,
   });
 
   logger.info('User logged in', { userId: user.id, email: user.email });
