@@ -9,6 +9,7 @@ const {
   publicSubmitSchema,
   createPublicLinkSchema,
   publicFormTokenParamsSchema,
+  publicLinkIdParamsSchema,
 } = require('../validators/publicValidator');
 
 const router = express.Router();
@@ -81,5 +82,28 @@ router.post('/links', authenticate, authorize([ROLES.ADMIN]), validate(createPub
  *         description: Public links fetched successfully
  */
 router.get('/links', authenticate, authorize([ROLES.ADMIN]), asyncHandler(publicController.getPublicLinks));
+
+/**
+ * @swagger
+ * /public/links/{id}:
+ *   delete:
+ *     tags: [Public]
+ *     summary: Delete a public form link
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Public link deleted successfully
+ *       404:
+ *         description: Public link not found
+ */
+router.delete('/links/:id', authenticate, authorize([ROLES.ADMIN]), validate(publicLinkIdParamsSchema, 'params'), asyncHandler(publicController.deletePublicLink));
 
 module.exports = router;

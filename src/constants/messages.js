@@ -23,6 +23,8 @@ module.exports = {
   PUBLIC: {
     LINK_CREATED: 'Public link created successfully',
     LINK_FETCHED: 'Public form fetched successfully',
+    LINK_DELETED: 'Public link deleted successfully',
+    LINK_NOT_FOUND: 'Public link not found',
     LINK_INVALID: 'Public form link is invalid or expired',
     SUBMIT_SUCCESS: 'Form submitted successfully',
   },

@@ -14,8 +14,13 @@ const publicFormTokenParamsSchema = Joi.object({
   token: Joi.string().trim().min(16).max(128).required(),
 });
 
+const publicLinkIdParamsSchema = Joi.object({
+  id: Joi.string().uuid().required(),
+});
+
 module.exports = {
   publicSubmitSchema,
   createPublicLinkSchema,
   publicFormTokenParamsSchema,
+  publicLinkIdParamsSchema,
 };

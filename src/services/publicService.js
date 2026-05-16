@@ -42,6 +42,21 @@ const createPublicLink = async (payload, context = {}) => {
   };
 };
 
+const deletePublicLink = async (id) => {
+  const link = await publicLinkRepository.findById(id);
+
+  if (!link) {
+    throw new AppError(
+      messages.PUBLIC.LINK_NOT_FOUND,
+      statusCodes.NOT_FOUND,
+      [],
+      errorTypes.NOT_FOUND
+    );
+  }
+
+  await publicLinkRepository.deleteById(id);
+};
+
 const getPublicLinks = async (query = {}) => {
   const pagination = getPagination(query);
   const result = await publicLinkRepository.findAll(pagination);
@@ -112,6 +127,7 @@ const submitPublicForm = async (payload) => {
 
 module.exports = {
   createPublicLink,
+  deletePublicLink,
   getPublicLinks,
   getPublicForm,
   submitPublicForm,

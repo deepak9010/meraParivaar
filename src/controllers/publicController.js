@@ -25,6 +25,16 @@ const getPublicLinks = async (req, res) => {
   });
 };
 
+const deletePublicLink = async (req, res) => {
+  await publicService.deletePublicLink(req.params.id);
+
+  return sendSuccess(res, {
+    message: messages.PUBLIC.LINK_DELETED,
+    data: null,
+    statusCode: statusCodes.OK,
+  });
+};
+
 const getPublicForm = async (req, res) => {
   const form = await publicService.getPublicForm(req.params.token);
 
@@ -47,6 +57,7 @@ const submitPublicForm = async (req, res) => {
 
 module.exports = {
   createPublicLink,
+  deletePublicLink,
   getPublicLinks,
   getPublicForm,
   submitPublicForm,
